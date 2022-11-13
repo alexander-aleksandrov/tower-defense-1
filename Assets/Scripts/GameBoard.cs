@@ -13,8 +13,9 @@ public class GameBoard : MonoBehaviour
 	private Vector2Int _size;
 
 	private Queue<Tile> _searchFrontier = new Queue<Tile>();
+	private TileContentFactory _contentFactory;
 
-	public void Initialyze(Vector2Int size)
+	public void Initialyze(Vector2Int size, TileContentFactory contentFactory)
 	{
 		_size = size;
 		_ground.localScale = new Vector3(size.x, size.y, 1f);
@@ -22,6 +23,7 @@ public class GameBoard : MonoBehaviour
 		Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
 
 		_tiles = new Tile[size.x * size.y];
+		_contentFactory = contentFactory;
 		for (int i = 0, y = 0; y < size.y; y++)
 		{
 			for (int x = 0; x < size.x; x++, i++)
@@ -44,21 +46,31 @@ public class GameBoard : MonoBehaviour
 				{
 					tile.IsAlternative = !tile.IsAlternative;
 				}
-
+				tile.Content = _contentFactory.Get(TileContentType.Empty);
 			}
 		}
-		FindPath();
+		ToggleDestination(_tiles[_tiles.Length / 2]);
 	}
 
-	public void FindPath()
+	public bool FindPath()
 	{
-		foreach (var tile in _tiles)
+		foreach (var t in _tiles)
 		{
-			tile.ClearPath();
+			if (t.Content.Type == TileContentType.Destination)
+			{
+				t.BecomeDestination();
+				_searchFrontier.Enqueue(t);
+			}
+			else
+			{
+				t.ClearPath();
+			}
 		}
-		int destinationIndex = _tiles.Length / 2;
-		_tiles[destinationIndex].BecomeDestination();
-		_searchFrontier.Enqueue(_tiles[destinationIndex]);
+
+		if (_searchFrontier.Count == 0)
+		{
+			return false;
+		}
 
 		while (_searchFrontier.Count > 0)
 		{
@@ -86,6 +98,27 @@ public class GameBoard : MonoBehaviour
 		foreach (var tile in _tiles)
 		{
 			tile.ShowPath();
+		}
+
+		return true;
+	}
+
+	public void ToggleDestination(Tile tile)
+	{
+		if (tile.Content.Type == TileContentType.Destination)
+		{
+			tile.Content = _contentFactory.Get(TileContentType.Empty);
+			if (!FindPath())
+			{
+				tile.Content = _contentFactory.Get(TileContentType.Destination);
+				FindPath();
+			}
+			FindPath();
+		}
+		else
+		{
+			tile.Content = _contentFactory.Get(TileContentType.Destination);
+			FindPath();
 		}
 	}
 

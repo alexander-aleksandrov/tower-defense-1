@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        _board.Initialyze(_boardSize);
+        _board.Initialyze(_boardSize, _contentFactory);
     }
 
     private void Update()
@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
         Tile tile = _board.GetTile(TouchRay);
         if (tile != null)
         {
-            tile.Content = _contentFactory.Get(TileContentType.Destination);
+            _board.ToggleDestination(tile);
         }
     }
 }
