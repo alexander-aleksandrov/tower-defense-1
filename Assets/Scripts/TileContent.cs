@@ -17,5 +17,6 @@ public class TileContent : MonoBehaviour
 public enum TileContentType
 {
     Empty,
-    Destination
+    Destination,
+    Wall
 }

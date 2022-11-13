@@ -59,7 +59,7 @@ public class Tile : MonoBehaviour
         }
         neighbor._distance = _distance + 1;
         neighbor._nextOnPath = this;
-        return neighbor;
+        return neighbor.Content.Type != TileContentType.Wall ? neighbor : null;
     }
     public Tile GrowPathEast() => GrowPathTo(_east);
     public Tile GrowPathWest() => GrowPathTo(_west);

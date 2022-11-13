@@ -9,6 +9,8 @@ public class TileContentFactory : ScriptableObject
     private TileContent _destinationPrefab;
     [SerializeField]
     private TileContent _emptyPrefab;
+    [SerializeField]
+    private TileContent _wallPrefab;
 
 
     public void Reclaim(TileContent content)
@@ -24,6 +26,8 @@ public class TileContentFactory : ScriptableObject
                 return Get(_emptyPrefab);
             case TileContentType.Destination:
                 return Get(_destinationPrefab);
+            case TileContentType.Wall:
+                return Get(_wallPrefab);
         }
         return null;
     }

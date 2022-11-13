@@ -22,11 +22,24 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            HandleAlternativeTouch();
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
             HandleTouch();
         }
     }
 
     private void HandleTouch()
+    {
+        Tile tile = _board.GetTile(TouchRay);
+        if (tile != null)
+        {
+            _board.ToggleWall(tile);
+        }
+    }
+
+    private void HandleAlternativeTouch()
     {
         Tile tile = _board.GetTile(TouchRay);
         if (tile != null)
