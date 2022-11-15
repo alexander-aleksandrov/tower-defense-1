@@ -15,6 +15,7 @@ public class GameBoard : MonoBehaviour
 	private Queue<Tile> _searchFrontier = new Queue<Tile>();
 	private TileContentFactory _contentFactory;
 	private List<Tile> _spawPoints = new List<Tile>();
+	public int SpawnPointCount => _spawPoints.Count;
 
 	public void Initialyze(Vector2Int size, TileContentFactory contentFactory)
 	{
@@ -186,5 +187,10 @@ public class GameBoard : MonoBehaviour
 			}
 		}
 		return null;
+	}
+
+	public Tile GetSpawnPoint(int index)
+	{
+		return _spawPoints[index];
 	}
 }

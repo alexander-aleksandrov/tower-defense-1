@@ -10,6 +10,11 @@ public class Game : MonoBehaviour
     private Camera _camera;
     [SerializeField]
     private TileContentFactory _contentFactory;
+    [SerializeField]
+    private EnemyFactory _enemyFactory;
+    [SerializeField, Range(0.1f, 10f)]
+    private float _spawnSpeed;
+    private float _spawnProgress;
 
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -28,6 +33,20 @@ public class Game : MonoBehaviour
         {
             HandleTouch();
         }
+        _spawnProgress += _spawnSpeed * Time.deltaTime;
+        while (_spawnProgress >= 1f)
+        {
+            _spawnProgress -= 1f;
+            SpawnEnemy();
+        }
+
+    }
+
+    private void SpawnEnemy()
+    {
+        Tile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount));
+        Enemy enemy = _enemyFactory.Get();
+        enemy.SpawnOn(spawnPoint);
     }
 
     private void HandleTouch()
