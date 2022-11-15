@@ -7,13 +7,17 @@ public class Tile : MonoBehaviour
     private Tile _east, _west, _north, _south, _nextOnPath;
     private int _distance;
 
-
     private Quaternion _northRotation = Quaternion.Euler(90f, 0f, 0f);
     private Quaternion _eastRotation = Quaternion.Euler(90f, 90f, 0f);
     private Quaternion _southRotation = Quaternion.Euler(90f, 180f, 0f);
     private Quaternion _westRotation = Quaternion.Euler(90f, 270f, 0f);
 
     private TileContent _content;
+
+    public Tile NextOnPath => _nextOnPath;
+    public Vector3 ExitPoint { get; private set; }
+
+    public Direction PathDirection { get; private set; }
 
     public TileContent Content
     {
@@ -50,8 +54,9 @@ public class Tile : MonoBehaviour
     {
         _distance = 0;
         _nextOnPath = null;
+        ExitPoint = transform.localPosition;
     }
-    private Tile GrowPathTo(Tile neighbor)
+    private Tile GrowPathTo(Tile neighbor, Direction direction)
     {
         if (!HasPath || neighbor == null || neighbor.HasPath)
         {
@@ -59,12 +64,14 @@ public class Tile : MonoBehaviour
         }
         neighbor._distance = _distance + 1;
         neighbor._nextOnPath = this;
+        neighbor.ExitPoint = (neighbor.transform.localPosition + transform.localPosition) * 0.5f;
+        neighbor.PathDirection = direction;
         return neighbor.Content.Type != TileContentType.Wall ? neighbor : null;
     }
-    public Tile GrowPathEast() => GrowPathTo(_east);
-    public Tile GrowPathWest() => GrowPathTo(_west);
-    public Tile GrowPathNorth() => GrowPathTo(_north);
-    public Tile GrowPathSouth() => GrowPathTo(_south);
+    public Tile GrowPathEast() => GrowPathTo(_east, Direction.West);
+    public Tile GrowPathWest() => GrowPathTo(_west, Direction.East);
+    public Tile GrowPathNorth() => GrowPathTo(_north, Direction.South);
+    public Tile GrowPathSouth() => GrowPathTo(_south, Direction.North);
 
     public void ShowPath()
     {
@@ -81,3 +88,4 @@ public class Tile : MonoBehaviour
             _westRotation;
     }
 }
+
