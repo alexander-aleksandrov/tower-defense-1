@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class Game : MonoBehaviour
 {
     [SerializeField]
     private Vector2Int _boardSize;
@@ -44,7 +44,14 @@ public class GameManager : MonoBehaviour
         Tile tile = _board.GetTile(TouchRay);
         if (tile != null)
         {
-            _board.ToggleDestination(tile);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                _board.ToggleDestination(tile);
+            }
+            else
+            {
+                _board.ToggleSpawnPoint(tile);
+            }
         }
     }
 }

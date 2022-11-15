@@ -18,5 +18,6 @@ public enum TileContentType
 {
     Empty,
     Destination,
-    Wall
+    Wall,
+    SpawnPoint
 }
