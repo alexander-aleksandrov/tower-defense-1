@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
+    private Transform _model;
     private Tile _tileFrom, _tileTo;
     private Vector3 _positionFrom, _positionTo;
     private float _progress;
@@ -15,7 +17,7 @@ public class Enemy : MonoBehaviour
     public void SpawnOn(Tile tile)
     {
         _tileFrom = tile;
-        _tileTo = tile.NextOnPath;
+        _tileTo = tile.NextTileOnPath;
         _progress = 0f;
         PrepareIntro();
     }
@@ -36,7 +38,7 @@ public class Enemy : MonoBehaviour
         while (_progress >= 1f)
         {
             _tileFrom = _tileTo;
-            _tileTo = _tileTo.NextOnPath;
+            _tileTo = _tileTo.NextTileOnPath;
             if (_tileTo == null)
             {
                 OrigignFactory.Reclaim(this);
@@ -46,8 +48,12 @@ public class Enemy : MonoBehaviour
             PrepareNextState();
 
         }
-        transform.localPosition = Vector3.LerpUnclamped(_positionFrom, _positionTo, _progress);
-        if (_directionChange != DirectionChange.None)
+
+        if (_directionChange == DirectionChange.None)
+        {
+            transform.localPosition = Vector3.LerpUnclamped(_positionFrom, _positionTo, _progress);
+        }
+        else
         {
             float angle = Mathf.LerpUnclamped(_directionAngleFrom, _directionAngleTo, _progress);
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
@@ -83,18 +89,25 @@ public class Enemy : MonoBehaviour
     {
         transform.localRotation = _direction.GetRotation();
         _directionAngleTo = _direction.GetAngle();
+        _model.localPosition = Vector3.zero;
     }
     private void PrepareTurnRight()
     {
         _directionAngleTo = _directionAngleFrom + 90f;
+        _model.localPosition = new Vector3(-0.5f, 0f);
+        transform.localPosition = _positionFrom + _direction.GetHalfVector();
     }
     private void PrepareTurnLeft()
     {
         _directionAngleTo = _directionAngleFrom - 90f;
+        _model.localPosition = new Vector3(0.5f, 0f);
+        transform.localPosition = _positionFrom + _direction.GetHalfVector();
     }
     private void PrepareTurnAround()
     {
         _directionAngleTo = _directionAngleFrom + 180f;
+        _model.localPosition = Vector3.zero;
+        transform.localPosition = _positionFrom;
     }
 
 }

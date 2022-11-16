@@ -14,7 +14,7 @@ public class Tile : MonoBehaviour
 
     private TileContent _content;
 
-    public Tile NextOnPath => _nextOnPath;
+    public Tile NextTileOnPath => _nextOnPath;
     public Vector3 ExitPoint { get; private set; }
 
     public Direction PathDirection { get; private set; }
@@ -64,7 +64,7 @@ public class Tile : MonoBehaviour
         }
         neighbor._distance = _distance + 1;
         neighbor._nextOnPath = this;
-        neighbor.ExitPoint = (neighbor.transform.localPosition + transform.localPosition) * 0.5f;
+        neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
         neighbor.PathDirection = direction;
         return neighbor.Content.Type != TileContentType.Wall ? neighbor : null;
     }
