@@ -29,8 +29,6 @@ public class Enemy : MonoBehaviour
         _progress += Time.deltaTime * _progressFactor;
         while (_progress >= 1f)
         {
-            _tileFrom = _tileTo;
-            _tileTo = _tileTo.NextTileOnPath;
             if (_tileTo == null)
             {
                 OrigignFactory.Reclaim(this);
@@ -56,7 +54,14 @@ public class Enemy : MonoBehaviour
 
     private void PrepareNextState()
     {
+        _tileFrom = _tileTo;
+        _tileTo = _tileTo.NextTileOnPath;
         _positionFrom = _positionTo;
+        if (_tileTo == null)
+        {
+            PrepareOutro();
+            return;
+        }
         _positionTo = _tileFrom.ExitPoint;
         _directionChange = _direction.GetDirectionChangeTo(_tileFrom.PathDirection);
         _direction = _tileFrom.PathDirection;
@@ -78,6 +83,17 @@ public class Enemy : MonoBehaviour
                 break;
         }
     }
+
+    private void PrepareOutro()
+    {
+        _positionTo = _tileFrom.transform.localPosition;
+        _directionChange = DirectionChange.None;
+        _directionAngleTo = _direction.GetAngle();
+        _model.localPosition = Vector3.zero;
+        transform.localRotation = _direction.GetRotation();
+        _progressFactor = 2f;
+    }
+
     private void PrepareForward()
     {
         transform.localRotation = _direction.GetRotation();
