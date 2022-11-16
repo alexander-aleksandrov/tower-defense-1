@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
     private Transform _model;
     private Tile _tileFrom, _tileTo;
     private Vector3 _positionFrom, _positionTo;
-    private float _progress;
+    private float _progress, _progressFactor;
     private Direction _direction;
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
@@ -22,19 +22,11 @@ public class Enemy : MonoBehaviour
         PrepareIntro();
     }
 
-    private void PrepareIntro()
-    {
-        _positionFrom = _tileFrom.transform.localPosition;
-        _positionTo = _tileFrom.ExitPoint;
-        _direction = _tileFrom.PathDirection;
-        _directionChange = DirectionChange.None;
-        _directionAngleFrom = _directionAngleTo = _direction.GetAngle();
-        transform.localRotation = _direction.GetRotation();
-    }
+
 
     public bool GameUpdate()
     {
-        _progress += Time.deltaTime;
+        _progress += Time.deltaTime * _progressFactor;
         while (_progress >= 1f)
         {
             _tileFrom = _tileTo;
@@ -44,8 +36,9 @@ public class Enemy : MonoBehaviour
                 OrigignFactory.Reclaim(this);
                 return false;
             }
-            _progress -= 1f;
+            _progress = (_progress - 1f) / _progressFactor;
             PrepareNextState();
+            _progress *= _progressFactor;
 
         }
 
@@ -90,24 +83,38 @@ public class Enemy : MonoBehaviour
         transform.localRotation = _direction.GetRotation();
         _directionAngleTo = _direction.GetAngle();
         _model.localPosition = Vector3.zero;
+        _progressFactor = 1f;
     }
     private void PrepareTurnRight()
     {
         _directionAngleTo = _directionAngleFrom + 90f;
         _model.localPosition = new Vector3(-0.5f, 0f);
         transform.localPosition = _positionFrom + _direction.GetHalfVector();
+        _progressFactor = 1f / (Mathf.PI * 0.25f);
     }
     private void PrepareTurnLeft()
     {
         _directionAngleTo = _directionAngleFrom - 90f;
         _model.localPosition = new Vector3(0.5f, 0f);
         transform.localPosition = _positionFrom + _direction.GetHalfVector();
+        _progressFactor = 1f / (Mathf.PI * 0.25f);
     }
     private void PrepareTurnAround()
     {
         _directionAngleTo = _directionAngleFrom + 180f;
         _model.localPosition = Vector3.zero;
         transform.localPosition = _positionFrom;
+        _progressFactor = 2f;
+    }
+    private void PrepareIntro()
+    {
+        _positionFrom = _tileFrom.transform.localPosition;
+        _positionTo = _tileFrom.ExitPoint;
+        _direction = _tileFrom.PathDirection;
+        _directionChange = DirectionChange.None;
+        _directionAngleFrom = _directionAngleTo = _direction.GetAngle();
+        transform.localRotation = _direction.GetRotation();
+        _progressFactor = 2f;
     }
 
 }
