@@ -10,6 +10,8 @@ public class Tower : TileContent
     private Transform _turret;
     [SerializeField]
     private Transform _laserBeam;
+    [SerializeField, Range(1f, 100f)]
+    private float _dmgPerSecond = 10f;
 
     private Vector3 _laserBeamScale;
 
@@ -43,6 +45,7 @@ public class Tower : TileContent
         _laserBeamScale.z = d;
         _laserBeam.localScale = _laserBeamScale;
         _laserBeam.localPosition = _turret.localPosition + 0.5f * d * _laserBeam.forward;
+        _target.Enemy.TakeDamage(_dmgPerSecond * Time.deltaTime);
     }
 
     public bool IsTrackingTarget()

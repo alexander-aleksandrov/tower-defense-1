@@ -12,9 +12,10 @@ public class Enemy : MonoBehaviour
     private float _directionAngleFrom, _directionAngleTo;
     private float _pathOffset;
     private float _speed;
-    public float Scale { get; private set; }
 
+    public float Scale { get; private set; }
     public EnemyFactory OrigignFactory { get; set; }
+    public float Health { get; private set; }
 
     public void SpawnOn(Tile tile)
     {
@@ -30,10 +31,16 @@ public class Enemy : MonoBehaviour
         _model.localScale = new Vector3(scale, scale, scale);
         _pathOffset = pathOffset;
         _speed = speed;
+        Health = 100f * scale;
     }
 
     public bool GameUpdate()
     {
+        if (Health <= 0)
+        {
+            OrigignFactory.Reclaim(this);
+            return false;
+        }
         _progress += Time.deltaTime * _progressFactor;
         while (_progress >= 1f)
         {
@@ -60,6 +67,13 @@ public class Enemy : MonoBehaviour
         return true;
     }
 
+    public void TakeDamage(float damage)
+    {
+        Debug.Assert(damage >= 0f, "Negative Damage Applied");
+        Health -= damage;
+    }
+
+    #region Preparing the state of enemy for the next tile
     private void PrepareNextState()
     {
         _tileFrom = _tileTo;
@@ -142,5 +156,5 @@ public class Enemy : MonoBehaviour
         _progressFactor = 2f * _speed;
     }
 
-
+    #endregion
 }
