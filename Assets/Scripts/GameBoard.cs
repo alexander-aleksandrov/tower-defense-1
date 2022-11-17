@@ -15,7 +15,17 @@ public class GameBoard : MonoBehaviour
 	private Queue<Tile> _searchFrontier = new Queue<Tile>();
 	private TileContentFactory _contentFactory;
 	private List<Tile> _spawPoints = new List<Tile>();
+	private List<TileContent> _updatingContent = new List<TileContent>();
+
 	public int SpawnPointCount => _spawPoints.Count;
+
+	public void GameUpdate()
+	{
+		for (int i = 0; i < _updatingContent.Count; i++)
+		{
+			_updatingContent[i].GameUpdate();
+		}
+	}
 
 	public void Initialyze(Vector2Int size, TileContentFactory contentFactory)
 	{
@@ -160,18 +170,18 @@ public class GameBoard : MonoBehaviour
 	{
 		if (tile.Content.Type == TileContentType.Tower)
 		{
+			_updatingContent.Remove(tile.Content);
 			tile.Content = _contentFactory.Get(TileContentType.Empty);
-			if (!FindPath())
-			{
-				tile.Content = _contentFactory.Get(TileContentType.Tower);
-				FindPath();
-			}
 			FindPath();
 		}
 		else if (tile.Content.Type == TileContentType.Empty)
 		{
 			tile.Content = _contentFactory.Get(TileContentType.Tower);
-			if (!FindPath())
+			if (FindPath())
+			{
+				_updatingContent.Add(tile.Content);
+			}
+			else
 			{
 				tile.Content = _contentFactory.Get(TileContentType.Empty);
 				FindPath();
@@ -180,6 +190,7 @@ public class GameBoard : MonoBehaviour
 		else if (tile.Content.Type == TileContentType.Wall)
 		{
 			tile.Content = _contentFactory.Get(TileContentType.Tower);
+			_updatingContent.Add(tile.Content);
 		}
 	}
 
@@ -204,7 +215,7 @@ public class GameBoard : MonoBehaviour
 	public Tile GetTile(Ray ray)
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit))
+		if (Physics.Raycast(ray, out hit, float.MaxValue, 1))
 		{
 			int x = (int)(hit.point.x + _size.x * 0.5f);
 			int y = (int)(hit.point.z + _size.y * 0.5f);

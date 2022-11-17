@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     private float _directionAngleFrom, _directionAngleTo;
     private float _pathOffset;
     private float _speed;
-
+    public float Scale { get; private set; }
 
     public EnemyFactory OrigignFactory { get; set; }
 
@@ -26,6 +26,7 @@ public class Enemy : MonoBehaviour
 
     public void Initialize(float scale, float speed, float pathOffset)
     {
+        Scale = scale;
         _model.localScale = new Vector3(scale, scale, scale);
         _pathOffset = pathOffset;
         _speed = speed;

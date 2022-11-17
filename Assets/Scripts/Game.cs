@@ -42,6 +42,7 @@ public class Game : MonoBehaviour
             SpawnEnemy();
         }
         _enemies.GameUpdate();
+        _board.GameUpdate();
     }
 
     private void SpawnEnemy()

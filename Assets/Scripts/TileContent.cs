@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[SelectionBase]
 public class TileContent : MonoBehaviour
 {
     [SerializeField]
@@ -14,6 +15,7 @@ public class TileContent : MonoBehaviour
     {
         OriginFactory.Reclaim(this);
     }
+    public virtual void GameUpdate() { }
 }
 
 public enum TileContentType
