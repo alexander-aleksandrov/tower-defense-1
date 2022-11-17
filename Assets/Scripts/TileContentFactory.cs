@@ -12,6 +12,8 @@ public class TileContentFactory : GameObjectFactory
     private TileContent _wallPrefab;
     [SerializeField]
     private TileContent _spawnPointPrefab;
+    [SerializeField]
+    private TileContent _towerPrefab;
 
 
     public void Reclaim(TileContent content)
@@ -31,6 +33,8 @@ public class TileContentFactory : GameObjectFactory
                 return Get(_wallPrefab);
             case TileContentType.SpawnPoint:
                 return Get(_spawnPointPrefab);
+            case TileContentType.Tower:
+                return Get(_towerPrefab);
         }
         return null;
     }

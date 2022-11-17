@@ -66,7 +66,7 @@ public class Tile : MonoBehaviour
         neighbor._nextOnPath = this;
         neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
         neighbor.PathDirection = direction;
-        return neighbor.Content.Type != TileContentType.Wall ? neighbor : null;
+        return neighbor.Content.isBlockingPath ? null : neighbor;
     }
     public Tile GrowPathEast() => GrowPathTo(_east, Direction.West);
     public Tile GrowPathWest() => GrowPathTo(_west, Direction.East);

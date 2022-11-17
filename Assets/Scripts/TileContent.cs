@@ -8,6 +8,8 @@ public class TileContent : MonoBehaviour
 
     public TileContentFactory OriginFactory { get; set; }
 
+    public bool isBlockingPath => Type == TileContentType.Wall || Type == TileContentType.Tower;
+
     public void Recycle()
     {
         OriginFactory.Reclaim(this);
@@ -19,5 +21,6 @@ public enum TileContentType
     Empty,
     Destination,
     Wall,
-    SpawnPoint
+    SpawnPoint,
+    Tower
 }
