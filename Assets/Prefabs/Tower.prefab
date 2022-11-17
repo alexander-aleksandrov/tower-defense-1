@@ -312,6 +312,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 4
+  _targetingRange: 2.34
+  _turret: {fileID: 2339675976963149703}
+  _laserBeam: {fileID: 4213474824426191380}
 --- !u!1 &4798784446555884404
 GameObject:
   m_ObjectHideFlags: 0
