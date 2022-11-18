@@ -1,54 +1,16 @@
 using System;
 using UnityEngine;
 
-public class Tower : TileContent
+public abstract class Tower : TileContent
 {
     [SerializeField, Range(1.5f, 10.5f)]
-    private float _targetingRange = 1.5f;
+    protected float _targetingRange = 1.5f;
 
-    [SerializeField]
-    private Transform _turret;
-    [SerializeField]
-    private Transform _laserBeam;
-    [SerializeField, Range(1f, 100f)]
-    private float _dmgPerSecond = 10f;
-
-    private Vector3 _laserBeamScale;
-
-    private TargetPoint _target;
     private const int ENEMY_LAYER_MASK = 1 << 6;
-    static Collider[] _targetsBuffer = new Collider[1];
+    static Collider[] _targetsBuffer = new Collider[100];
 
-    private void Awake()
-    {
-        _laserBeamScale = _laserBeam.localScale;
-    }
-
-    public override void GameUpdate()
-    {
-        if (IsTrackingTarget() || IsAcquireTarget())
-        {
-            Shoot();
-        }
-        else
-        {
-            _laserBeam.localScale = Vector3.zero;
-        }
-    }
-
-    private void Shoot()
-    {
-        Vector3 point = _target.Position;
-        _turret.LookAt(point);
-        _laserBeam.localRotation = _turret.localRotation;
-        float d = Vector3.Distance(_turret.position, point);
-        _laserBeamScale.z = d;
-        _laserBeam.localScale = _laserBeamScale;
-        _laserBeam.localPosition = _turret.localPosition + 0.5f * d * _laserBeam.forward;
-        _target.Enemy.TakeDamage(_dmgPerSecond * Time.deltaTime);
-    }
-
-    public bool IsTrackingTarget()
+    public abstract TowerType TowerType { get; }
+    protected bool IsTrackingTarget(ref TargetPoint _target)
     {
         if (_target == null)
         {
@@ -68,7 +30,7 @@ public class Tower : TileContent
         return true;
     }
 
-    private bool IsAcquireTarget()
+    protected bool IsAcquireTarget(out TargetPoint _target)
     {
         Vector3 a = transform.localPosition;
         Vector3 b = a;
@@ -77,7 +39,7 @@ public class Tower : TileContent
 
         if (hits > 0)
         {
-            _target = _targetsBuffer[0].GetComponent<TargetPoint>();
+            _target = _targetsBuffer[UnityEngine.Random.Range(0, hits)].GetComponent<TargetPoint>();
             return true;
         }
         _target = null;
@@ -90,10 +52,10 @@ public class Tower : TileContent
         Vector3 position = transform.localPosition;
         position.y += 0.01f;
         Gizmos.DrawWireSphere(position, _targetingRange);
-        if (_target != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(position, _target.Position);
-        }
     }
+}
+
+public enum TowerType
+{
+    Laser, Mortar
 }

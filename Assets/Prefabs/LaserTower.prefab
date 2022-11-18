@@ -272,9 +272,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1922267639799675558}
-  - component: {fileID: 1922267639799675557}
+  - component: {fileID: 2243166270115186958}
   m_Layer: 0
-  m_Name: Tower
+  m_Name: LaserTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1922267639799675557
+--- !u!114 &2243166270115186958
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -308,14 +308,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3701785808586903955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2e0bcef5e2d11f4fac2d24cdadda694, type: 3}
+  m_Script: {fileID: 11500000, guid: eb4ee2ff9663bef40a89e8d2aaadc89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 4
   _targetingRange: 2.5
   _turret: {fileID: 2339675976963149703}
   _laserBeam: {fileID: 4213474824426191380}
-  _dmgPerSecond: 15
+  _dmgPerSecond: 20
 --- !u!1 &4798784446555884404
 GameObject:
   m_ObjectHideFlags: 0

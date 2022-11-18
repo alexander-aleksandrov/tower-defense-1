@@ -15,6 +15,7 @@ public class Game : MonoBehaviour
     [SerializeField, Range(0.1f, 10f)]
     private float _spawnSpeed;
     private float _spawnProgress;
+    private TowerType _selectedTowerType;
 
     private EnemyCollection _enemies = new EnemyCollection();
 
@@ -34,6 +35,14 @@ public class Game : MonoBehaviour
         else if (Input.GetMouseButtonDown(1))
         {
             HandleTouch();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _selectedTowerType = TowerType.Laser;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _selectedTowerType = TowerType.Mortar;
         }
         _spawnProgress += _spawnSpeed * Time.deltaTime;
         while (_spawnProgress >= 1f)
@@ -61,7 +70,7 @@ public class Game : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                _board.ToggleTower(tile);
+                _board.ToggleTower(tile, _selectedTowerType);
             }
             else
             {
