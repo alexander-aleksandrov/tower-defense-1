@@ -12,14 +12,25 @@ public class Game : MonoBehaviour
     private TileContentFactory _contentFactory;
     [SerializeField]
     private EnemyFactory _enemyFactory;
+    [SerializeField]
+    private WarFactory _warFactory;
+
     [SerializeField, Range(0.1f, 10f)]
     private float _spawnSpeed;
     private float _spawnProgress;
     private TowerType _selectedTowerType;
 
-    private EnemyCollection _enemies = new EnemyCollection();
-
+    GameBehaviorCollection _nonEnemies = new GameBehaviorCollection();
+    GameBehaviorCollection _enemies = new GameBehaviorCollection();
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
+
+
+    public static Game instance;
+    private void OnEnable()
+    {
+        instance = this;
+    }
+
 
     private void Start()
     {
@@ -53,6 +64,14 @@ public class Game : MonoBehaviour
         _enemies.GameUpdate();
         Physics.SyncTransforms();
         _board.GameUpdate();
+        _nonEnemies.GameUpdate();
+    }
+
+    public static Shell SpawnShell()
+    {
+        Shell shell = instance._warFactory.Shell;
+        instance._nonEnemies.Add(shell);
+        return shell;
     }
 
     private void SpawnEnemy()

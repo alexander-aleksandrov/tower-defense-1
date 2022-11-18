@@ -30,6 +30,7 @@ public class MortarTower : Tower
         {
             if (IsAcquireTarget(out TargetPoint target))
             {
+
                 Launch(target);
                 _launchProgress -= 1;
             }
