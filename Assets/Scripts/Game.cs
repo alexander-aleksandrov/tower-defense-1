@@ -24,8 +24,8 @@ public class Game : MonoBehaviour
     GameBehaviorCollection _enemies = new GameBehaviorCollection();
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
 
-
     public static Game instance;
+
     private void OnEnable()
     {
         instance = this;
@@ -72,6 +72,13 @@ public class Game : MonoBehaviour
         Shell shell = instance._warFactory.Shell;
         instance._nonEnemies.Add(shell);
         return shell;
+    }
+
+    public static Explosion SpawnExplosion()
+    {
+        Explosion explosion = instance._warFactory.Explosion;
+        instance._nonEnemies.Add(explosion);
+        return explosion;
     }
 
     private void SpawnEnemy()

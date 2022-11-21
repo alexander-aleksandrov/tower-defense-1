@@ -12,8 +12,8 @@ public class MortarTower : Tower
     [SerializeField, Range(0.5f, 3f)]
     private float _shellBlastRadius = 1f;
 
-    [SerializeField, Range(1f, 10f)]
-    private float _shellDamage = 10f;
+    [SerializeField, Range(1f, 100f)]
+    private float _shellDamage = 100f;
 
     private float _launchSpeed;
     private float _launchProgress;

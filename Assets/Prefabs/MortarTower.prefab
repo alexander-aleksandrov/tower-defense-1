@@ -134,6 +134,8 @@ MonoBehaviour:
   _targetingRange: 3.5
   _shotsPerSecond: 1
   _mortar: {fileID: 2515586132358081286}
+  _shellBlastRadius: 1
+  _shellDamage: 100
 --- !u!1 &6779452146089284209
 GameObject:
   m_ObjectHideFlags: 0

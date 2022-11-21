@@ -17,13 +17,9 @@ public class Shell : WarEntity
         _age += Time.deltaTime;
         Vector3 p = _launchPoint + _launchVelocity * _age;
         p.y -= 0.5f * 9.81f * _age * _age;
-        if (p.y <= 0)
+        if (p.y <= 0f)
         {
-            TargetPoint.FillBuffer(_targetPoint, _blastRadius);
-            for (int i = 0; i < TargetPoint.BufferedCount; i++)
-            {
-                TargetPoint.GetBuffered(i).Enemy.TakeDamage(_damage);
-            }
+            Game.SpawnExplosion().Initialize(transform.localPosition, _blastRadius, _damage);
             OriginFactory.Reclaim(this);
             return false;
         }
