@@ -6,9 +6,6 @@ public abstract class Tower : TileContent
     [SerializeField, Range(1.5f, 10.5f)]
     protected float _targetingRange = 1.5f;
 
-    private const int ENEMY_LAYER_MASK = 1 << 6;
-    static Collider[] _targetsBuffer = new Collider[100];
-
     public abstract TowerType TowerType { get; }
     protected bool IsTrackingTarget(ref TargetPoint _target)
     {
@@ -32,14 +29,9 @@ public abstract class Tower : TileContent
 
     protected bool IsAcquireTarget(out TargetPoint _target)
     {
-        Vector3 a = transform.localPosition;
-        Vector3 b = a;
-        b.y += 2f;
-        int hits = Physics.OverlapCapsuleNonAlloc(a, b, _targetingRange, _targetsBuffer, ENEMY_LAYER_MASK);
-
-        if (hits > 0)
+        if (TargetPoint.FillBuffer(transform.localPosition, _targetingRange))
         {
-            _target = _targetsBuffer[UnityEngine.Random.Range(0, hits)].GetComponent<TargetPoint>();
+            _target = TargetPoint.GetRandomTarget;
             return true;
         }
         _target = null;
