@@ -25,13 +25,13 @@ public class Enemy : GameBehavior
         PrepareIntro();
     }
 
-    public void Initialize(float scale, float speed, float pathOffset)
+    public void Initialize(float scale, float speed, float pathOffset, float health)
     {
         Scale = scale;
         _model.localScale = new Vector3(scale, scale, scale);
         _pathOffset = pathOffset;
         _speed = speed;
-        Health = 100f * scale;
+        Health = health;
     }
 
     public override bool GameUpdate()
@@ -158,3 +158,5 @@ public class Enemy : GameBehavior
 
     #endregion
 }
+
+public enum EnemyType { Small, Medium, Large }

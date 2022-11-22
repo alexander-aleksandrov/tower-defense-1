@@ -27,6 +27,9 @@ public class Shell : WarEntity
         Vector3 d = _launchVelocity;
         d.y = -9.81f * _age;
         transform.localRotation = Quaternion.LookRotation(d);
+
+        Game.SpawnExplosion().Initialize(p, 0.1f, 0f);
+
         return true;
     }
 
