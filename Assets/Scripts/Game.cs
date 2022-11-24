@@ -10,14 +10,13 @@ public class Game : MonoBehaviour
     private Camera _camera;
     [SerializeField]
     private TileContentFactory _contentFactory;
-    [SerializeField]
-    private EnemyFactory _enemyFactory;
+
     [SerializeField]
     private WarFactory _warFactory;
+    [SerializeField]
+    private GameScenario _scenario;
+    private GameScenario.State _activeScenario;
 
-    [SerializeField, Range(0.1f, 10f)]
-    private float _spawnSpeed;
-    private float _spawnProgress;
     private TowerType _selectedTowerType;
 
     GameBehaviorCollection _nonEnemies = new GameBehaviorCollection();
@@ -31,10 +30,10 @@ public class Game : MonoBehaviour
         instance = this;
     }
 
-
-    private void Start()
+    private void Awake()
     {
         _board.Initialyze(_boardSize, _contentFactory);
+        _activeScenario = _scenario.Begin();
     }
 
     private void Update()
@@ -55,12 +54,9 @@ public class Game : MonoBehaviour
         {
             _selectedTowerType = TowerType.Mortar;
         }
-        _spawnProgress += _spawnSpeed * Time.deltaTime;
-        while (_spawnProgress >= 1f)
-        {
-            _spawnProgress -= 1f;
-            SpawnEnemy();
-        }
+
+        _activeScenario.Progress();
+
         _enemies.GameUpdate();
         Physics.SyncTransforms();
         _board.GameUpdate();
@@ -81,12 +77,12 @@ public class Game : MonoBehaviour
         return explosion;
     }
 
-    private void SpawnEnemy()
+    public static void SpawnEnemy(EnemyFactory factory, EnemyType type)
     {
-        Tile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount));
-        Enemy enemy = _enemyFactory.Get();
+        Tile spawnPoint = instance._board.GetSpawnPoint(Random.Range(0, instance._board.SpawnPointCount));
+        Enemy enemy = factory.Get(type);
         enemy.SpawnOn(spawnPoint);
-        _enemies.Add(enemy);
+        instance._enemies.Add(enemy);
     }
 
     private void HandleTouch()
