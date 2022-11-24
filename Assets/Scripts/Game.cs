@@ -10,18 +10,28 @@ public class Game : MonoBehaviour
     private Camera _camera;
     [SerializeField]
     private TileContentFactory _contentFactory;
-
     [SerializeField]
     private WarFactory _warFactory;
+    private TowerType _selectedTowerType;
+
     [SerializeField]
     private GameScenario _scenario;
     private GameScenario.State _activeScenario;
 
-    private TowerType _selectedTowerType;
+    [SerializeField, Range(0, 100)]
+    private int _startingPlayerHealth = 10;
+    private int _playerHealth;
+
+    [SerializeField, Range(1f, 100f)]
+    private float _playerSpeed = 1f;
+
+
+    const float PAUSED_TIME_SCALE = 0f;
 
     GameBehaviorCollection _nonEnemies = new GameBehaviorCollection();
     GameBehaviorCollection _enemies = new GameBehaviorCollection();
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
+
 
     public static Game instance;
 
@@ -32,12 +42,24 @@ public class Game : MonoBehaviour
 
     private void Awake()
     {
+        _playerHealth = _startingPlayerHealth;
         _board.Initialyze(_boardSize, _contentFactory);
         _activeScenario = _scenario.Begin();
     }
 
     private void Update()
     {
+        //Game pause
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Time.timeScale = Time.timeScale > PAUSED_TIME_SCALE ? PAUSED_TIME_SCALE : 1f;
+        }
+        else if (Time.timeScale > PAUSED_TIME_SCALE)
+        {
+            Time.timeScale = _playerSpeed;
+        }
+
+        //Place a wall/tower or spawn/destination
         if (Input.GetMouseButtonDown(0))
         {
             HandleAlternativeTouch();
@@ -46,6 +68,8 @@ public class Game : MonoBehaviour
         {
             HandleTouch();
         }
+
+        //Choose tower type 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             _selectedTowerType = TowerType.Laser;
@@ -55,12 +79,48 @@ public class Game : MonoBehaviour
             _selectedTowerType = TowerType.Mortar;
         }
 
+        //Begin a new game
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            Debug.Log("New Game Started");
+            BeginNewGame();
+        }
+
+        //Loosing the game 
+        if (_playerHealth <= 0 && _startingPlayerHealth > 0)
+        {
+            Debug.Log("Defeated");
+            BeginNewGame();
+        }
+        //Winning the game 
+        if (!_activeScenario.Progress() && _enemies.IsEmpty)
+        {
+            Debug.Log("You win!");
+            BeginNewGame();
+            _activeScenario.Progress();
+        }
+
+
         _activeScenario.Progress();
 
         _enemies.GameUpdate();
         Physics.SyncTransforms();
         _board.GameUpdate();
         _nonEnemies.GameUpdate();
+    }
+
+    public static void EnemyReachedDestination()
+    {
+        instance._playerHealth--;
+    }
+
+    public void BeginNewGame()
+    {
+        _playerHealth = _startingPlayerHealth;
+        _enemies.Clear();
+        _nonEnemies.Clear();
+        _board.Clear();
+        _activeScenario = _scenario.Begin();
     }
 
     public static Shell SpawnShell()

@@ -334,9 +334,10 @@ MonoBehaviour:
   _board: {fileID: 1712306777}
   _camera: {fileID: 963194227}
   _contentFactory: {fileID: 11400000, guid: c8c6071d73d2dcf46b4f3225dcd7e057, type: 2}
-  _enemyFactory: {fileID: 11400000, guid: 8f1dfc67ae3809e4692ed0e1349e41cc, type: 2}
   _warFactory: {fileID: 11400000, guid: e84bd029e7d9a1047818b2744f60a4b6, type: 2}
-  _spawnSpeed: 0.8
+  _scenario: {fileID: 11400000, guid: ca7537b26f387a846adcb964ee4e82ec, type: 2}
+  _startingPlayerHealth: 10
+  _playerSpeed: 1
 --- !u!4 &1395904769
 Transform:
   m_ObjectHideFlags: 0

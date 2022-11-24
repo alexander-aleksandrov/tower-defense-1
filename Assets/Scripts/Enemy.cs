@@ -38,7 +38,7 @@ public class Enemy : GameBehavior
     {
         if (Health <= 0)
         {
-            OrigignFactory.Reclaim(this);
+            Recycle();
             return false;
         }
         _progress += Time.deltaTime * _progressFactor;
@@ -46,7 +46,8 @@ public class Enemy : GameBehavior
         {
             if (_tileTo == null)
             {
-                OrigignFactory.Reclaim(this);
+                Game.EnemyReachedDestination();
+                Recycle();
                 return false;
             }
             _progress = (_progress - 1f) / _progressFactor;
@@ -157,6 +158,11 @@ public class Enemy : GameBehavior
     }
 
     #endregion
+
+    public override void Recycle()
+    {
+        OrigignFactory.Reclaim(this);
+    }
 }
 
 public enum EnemyType { Small, Medium, Large }

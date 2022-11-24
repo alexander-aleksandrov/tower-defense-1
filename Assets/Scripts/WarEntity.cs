@@ -6,7 +6,7 @@ public class WarEntity : GameBehavior
         get => _originFactory;
         set { _originFactory = value; }
     }
-    public void Recycle()
+    public override void Recycle()
     {
         _originFactory.Reclaim(this);
     }
